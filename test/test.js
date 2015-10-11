@@ -22,19 +22,25 @@ describe('ipfs node api', function () {
     this.timeout(20000)
     log('ipfs node setup')
 
-    ipfsd.disposable(function (err, node) {
-      if (err) throw err
-      log('ipfs init done')
-      ipfsNode = node
-
-      ipfsNode.startDaemon(function (err, ignore) {
+    if (!process.env.USE_SYSTEM_NODE) {
+      ipfsd.disposable(function (err, node) {
         if (err) throw err
-        log('ipfs daemon running')
+        log('ipfs init done')
+        ipfsNode = node
 
-        ipfs = ipfsApi(ipfsNode.apiAddr)
-        done()
+        ipfsNode.startDaemon(function (err, ignore) {
+          if (err) throw err
+          log('ipfs daemon running')
+
+          ipfs = ipfsApi(ipfsNode.apiAddr)
+          done()
+        })
       })
-    })
+    } else {
+      log('NOTE: some tests will not pass if not connected to other nodes( ls, refs for e.g')
+      ipfs = ipfsApi('localhost', 5001)
+      done()
+    }
   })
 
   it('has the api object', function () {
@@ -287,17 +293,123 @@ describe('ipfs node api', function () {
     })
   })
 
-  it('test for error after daemon stops', function (done) {
-    this.timeout(6000)
-    var nodeStopped
-    ipfsNode.stopDaemon(function () {
-      if (!nodeStopped) {
-        nodeStopped = true
-        ipfs.id(function (err, res) {
-          assert.equal(err.code, 'ECONNREFUSED')
+  // [x] files.mkdir
+  // [x] files.cp
+  // [x] files.ls
+  // [x] files.stat
+  // [ ] files.read
+  // [ ] files.write
+  // [ ] files.mv
+  // [x] files.rm
+
+  // added on the add test 'Qma4hjFTnCasJ8PVp3mZbZK5g2vGDT4LByLJ7m8ciyRFZP'
+
+  // --- files api tests
+
+  it('files.mkdir', function (done) {
+    this.timeout(20000)
+
+    ipfs.files.mkdir('/test-folder', function (err) {
+      console.log('->', err)
+      assert(!err)
+      if (err) {
+        return done()
+      }
+      done()
+    })
+  })
+
+  it('files.cp', function (done) {
+    this.timeout(20000)
+
+    ipfs.files
+      .cp(['/ipfs/Qma4hjFTnCasJ8PVp3mZbZK5g2vGDT4LByLJ7m8ciyRFZP', '/test-folder/test-file'], function (err) {
+      assert(!err)
+      if (err) {
+        return done()
+      }
+      done()
+    })
+  })
+
+  it('files.ls', function (done) {
+    this.timeout(20000)
+
+    ipfs.files.ls('/test-folder', function (err, res) {
+      assert(!err)
+      if (err) {
+        return done()
+      }
+      assert.equal(res.Entries.length, 1)
+      done()
+    })
+  })
+
+  it('files.stat', function (done) {
+    this.timeout(20000)
+
+    ipfs.files.stat('/test-folder/test-file', function (err, res) {
+      assert(!err)
+      if (err) {
+        return done()
+      }
+      assert.deepEqual(res, {
+        Hash: 'Qma4hjFTnCasJ8PVp3mZbZK5g2vGDT4LByLJ7m8ciyRFZP',
+        Size: 12,
+        CumulativeSize: 20,
+        Blocks: 0
+      })
+
+      done()
+    })
+  })
+
+  // -
+
+  it('files.read', function (done) {
+    this.timeout(20000)
+
+    ipfs.files.read('/test-folder/test-file', function (err, stream) {
+      if (err) throw err
+      var buf = ''
+      stream
+        .on('error', function (err) { throw err })
+        .on('data', function (data) { buf += data })
+        .on('end', function () {
+          assert.equal(buf, fs.readFileSync(testfile))
           done()
         })
-      }
     })
+  })
+
+  // -
+
+  it('files.rm', function (done) {
+    this.timeout(20000)
+
+    // TODO fix the recursive qs value based on Jeromy input
+    ipfs.files.rm('/test-folder', { '-r': true }, function (err) {
+      assert(!err)
+      if (err) {
+        return done()
+      }
+      done()
+    })
+  })
+
+  it('test for error after daemon stops', function (done) {
+    if (!process.env.USE_SYSTEM_NODE) {
+      this.timeout(6000)
+      var nodeStopped
+      ipfsNode.stopDaemon(function () {
+        if (!nodeStopped) {
+          nodeStopped = true
+          ipfs.id(function (err, res) {
+            assert.equal(err.code, 'ECONNREFUSED')
+            done()
+          })
+        }
+      })
+    } else { done() }
   })
 })

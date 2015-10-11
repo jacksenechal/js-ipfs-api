@@ -83,7 +83,9 @@ function requestAPI (path, args, opts, files, buffer, cb) {
       }
 
       if (res.statusCode >= 400 || !res.statusCode) {
-        if (!data) data = new Error()
+        if (!data) {
+          data = new Error('Response error:' + res.statusCode)
+        }
         return cb(data, null)
       }
       return cb(null, data)
