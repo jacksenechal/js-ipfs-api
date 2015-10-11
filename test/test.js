@@ -324,12 +324,12 @@ describe('ipfs node api', function () {
 
     ipfs.files
       .cp(['/ipfs/Qma4hjFTnCasJ8PVp3mZbZK5g2vGDT4LByLJ7m8ciyRFZP', '/test-folder/test-file'], function (err) {
-      assert(!err)
-      if (err) {
-        return done()
-      }
-      done()
-    })
+        assert(!err)
+        if (err) {
+          return done()
+        }
+        done()
+      })
   })
 
   it('files.ls', function (done) {
@@ -388,7 +388,7 @@ describe('ipfs node api', function () {
     this.timeout(20000)
 
     // TODO fix the recursive qs value based on Jeromy input
-    ipfs.files.rm('/test-folder', { '-r': true }, function (err) {
+    ipfs.files.rm('/test-folder', { 'r': true }, function (err) {
       assert(!err)
       if (err) {
         return done()
