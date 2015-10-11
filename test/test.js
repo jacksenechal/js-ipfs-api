@@ -297,9 +297,9 @@ describe('ipfs node api', function () {
   // [x] files.cp
   // [x] files.ls
   // [x] files.stat
-  // [ ] files.read
-  // [ ] files.write
-  // [ ] files.mv
+  // [x] files.read
+  // [~] files.write
+  // [x] files.mv
   // [x] files.rm
 
   // added on the add test 'Qma4hjFTnCasJ8PVp3mZbZK5g2vGDT4LByLJ7m8ciyRFZP'
@@ -310,7 +310,6 @@ describe('ipfs node api', function () {
     this.timeout(20000)
 
     ipfs.files.mkdir('/test-folder', function (err) {
-      console.log('->', err)
       assert(!err)
       if (err) {
         return done()
@@ -379,6 +378,26 @@ describe('ipfs node api', function () {
           assert.equal(buf, fs.readFileSync(testfile))
           done()
         })
+    })
+  })
+
+  /*
+  it('files.write', function (done) {
+    this.timeout(20000)
+
+    ipfs.files.write(['/test-folder/test-file', 'yellow'], function (err) {
+      if (err) throw err
+      done()
+    })
+  })
+  */
+
+  it('files.mv', function (done) {
+    this.timeout(20000)
+
+    ipfs.files.mv(['/test-folder/test-file', '/test-folder/test-file2'], function (err) {
+      if (err) throw err
+      done()
     })
   })
 
