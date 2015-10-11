@@ -293,17 +293,6 @@ describe('ipfs node api', function () {
     })
   })
 
-  // [x] files.mkdir
-  // [x] files.cp
-  // [x] files.ls
-  // [x] files.stat
-  // [x] files.read
-  // [~] files.write
-  // [x] files.mv
-  // [x] files.rm
-
-  // added on the add test 'Qma4hjFTnCasJ8PVp3mZbZK5g2vGDT4LByLJ7m8ciyRFZP'
-
   // --- files api tests
 
   it('files.mkdir', function (done) {
@@ -381,16 +370,17 @@ describe('ipfs node api', function () {
     })
   })
 
-  /*
   it('files.write', function (done) {
     this.timeout(20000)
 
-    ipfs.files.write(['/test-folder/test-file', 'yellow'], function (err) {
-      if (err) throw err
+    ipfs.files.write('/test-folder/test-file', new Buffer('bananas'), function (err) {
+      console.log('->', err)
+      if (err) {
+        throw err
+      }
       done()
     })
   })
-  */
 
   it('files.mv', function (done) {
     this.timeout(20000)
