@@ -55,7 +55,13 @@
     "test:node": "gulp test:node",
     "test:browser": "gulp test:browser",
     "lint": "gulp lint",
-    "build": "./node_modules/.bin/browserify -t brfs -t [babelify --presets [es2015]] -s ipfsAPI -e ./src/index.js | tee dist/ipfsapi.js | ./node_modules/.bin/uglifyjs -m > dist/ipfsapi.min.js"
+    "build": "./node_modules/.bin/browserify -t brfs -t [babelify --presets [es2015]] -s ipfsAPI -e ./src/index.js | tee dist/ipfsapi.js | ./node_modules/.bin/uglifyjs -m > dist/ipfsapi.min.js",
+    "test-usn": "USE_SYSTEM_NODE='true' ./node_modules/.bin/mocha",
+  },
+  "standard": {
+    "ignore": [
+      "dist/*"
+    ]
   },
   "pre-commit": [
     "lint",
