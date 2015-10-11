@@ -34,6 +34,7 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha",
+    "test-usn": "USE_SYSTEM_NODE='true' ./node_modules/.bin/mocha",
     "lint": "./node_modules/.bin/standard",
     "build": "./node_modules/.bin/browserify -t brfs -s ipfsAPI -e ./src/index.js | tee dist/ipfsapi.js | ./node_modules/.bin/uglifyjs -m > dist/ipfsapi.min.js"
   },
