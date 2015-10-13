@@ -370,11 +370,20 @@ describe('ipfs node api', function () {
     })
   })
 
+  it('files.read for file that does not exist', function (done) {
+    this.timeout(20000)
+
+    ipfs.files.read('/test-folder/test-file-not-exist', function (err, stream) {
+      if (err) {
+        done()
+      }
+    })
+  })
+
   it('files.write', function (done) {
     this.timeout(20000)
 
     ipfs.files.write('/test-folder/test-file', new Buffer('bananas'), function (err) {
-      console.log('->', err)
       if (err) {
         throw err
       }
