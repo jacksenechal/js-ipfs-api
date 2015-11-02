@@ -714,6 +714,7 @@ describe('IPFS Node.js API wrapper tests', function () {
 
       apiClients['a'].files.stat('/test-folder/test-file', function (err, res) {
         assert(!err)
+
         if (err) {
           return done()
         }
@@ -733,17 +734,17 @@ describe('IPFS Node.js API wrapper tests', function () {
     it('files.read', function (done) {
       this.timeout(20000)
 
-      apiClients['a'].files.read('/test-folder/test-file', { stream: true }, function (err, stream) {
+      apiClients['a'].files.read('/test-folder/test-file', function (err, stream) {
         if (err) {
           throw err
         }
-        console.log('->', stream)
+
         var buf = ''
         stream
           .on('error', function (err) { throw err })
           .on('data', function (data) { buf += data })
           .on('end', function () {
-            assert.equal(buf, fs.readFileSync(testfile))
+            assert.equal(buf, fs.readFileSync(testfilePath))
             done()
           })
       })
@@ -784,7 +785,7 @@ describe('IPFS Node.js API wrapper tests', function () {
     it('files.rm', function (done) {
       this.timeout(20000)
 
-      apiClients['a'].files.rm('/test-folder', { 'r': true }, function (err) {
+      apiClients['a'].files.rm('/test-folder', { 'recursive': true }, function (err) {
         assert(!err)
         if (err) {
           return done()
