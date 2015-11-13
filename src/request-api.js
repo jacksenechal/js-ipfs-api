@@ -70,7 +70,7 @@ function makeRequest (opts, buffer, cb) {
   delete opts.qs.followSymlinks
 
   const result = {
-    stream: false,
+    stream: opts.stream,
     chunkedObjects: false,
     objects: []
   }
