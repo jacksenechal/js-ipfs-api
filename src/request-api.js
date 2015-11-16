@@ -109,9 +109,11 @@ function requestAPI (config, path, args, qs, files, buffer, cb) {
 
   qs['stream-channels'] = true
 
+  const port = config.port ? `:${config.port}` : ''
+
   const opts = {
     method: files ? 'POST' : 'GET',
-    uri: `http://${config.host}:${config.port}${config['api-path']}${path}`,
+    uri: `http://${config.host}${port}${config['api-path']}${path}`,
     qs: qs,
     useQuerystring: true,
     headers: {},
